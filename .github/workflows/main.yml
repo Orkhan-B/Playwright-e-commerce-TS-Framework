@@ -1,0 +1,52 @@
+name: Playwright Tests
+on:
+  schedule:
+    - cron: '30 5 * * 1-5'
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    timeout-minutes: 180
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm i
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Show tests
+        run: npx playwright test --list
+
+      - name: Run Playwright tests
+        continue-on-error: true
+        run: CI=true PLAYWRIGHT_JUNIT_OUTPUT_NAME=xray-report.xml SECRET=${{secrets.ENCRYPTION_SECRET}} npx playwright test  --reporter=junit
+
+      # - name: Upload Playwright report to artifacts
+      #   uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      #     retention-days: 31
+
+      # - name: Authenticate with Xray
+      #   run: |
+      #     cat cloud_auth.json  | sed s/CLIENT_ID/${{ secrets.XRAYCLOUD_CLIENT_ID }}/g | sed s/CLIENT_SECRET/${{ secrets.XRAYCLOUD_CLIENT_SECRET }}/g > cloud_auth.json
+      #     echo token=$(curl -H "Content-Type: application/json" -X POST --data @"cloud_auth.json" ${{ secrets.XRAYCLOUD_BASE_URL }}/api/v1/authenticate| tr -d '"') >> $GITHUB_ENV
+
+      # - name: Import results to Xray (cloud)
+      #   run: |
+      #     curl -H "Content-Type: text/xml" -X POST -H "Authorization: Bearer ${{ env.token }}"  --data @"xray-report.xml" "${{ secrets.XRAYCLOUD_BASE_URL }}/api/v2/import/execution/junit?projectKey=${{ secrets.JIRACLOUD_PROJECT_KEY }}&testPlanKey=${{ secrets.XRAYCLOUD_TEST_PLAN_KEY }}"

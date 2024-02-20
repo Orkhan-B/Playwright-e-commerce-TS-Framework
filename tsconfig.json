@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "lib": ["dom", "ES2022"],
+    "paths": {
+      "@tests/*": ["e2e/*"],
+      "@pages/*": ["PageObjects/*"],
+      "@helpers/*": ["Helpers/*"]
+    }
+  }
+}
