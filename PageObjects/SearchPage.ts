@@ -7,32 +7,26 @@ import { Header } from './SharedModules/Header';
 export class SearchPage extends WebActionsHelper {
   constructor(_page: Page, _context: BrowserContext) {
     super(_page, _context);
-    this.inHeader = new Header(this.page, this.context);
-    this.inFooter = new Footer(this.page, this.context);
-
-    /*-----------------locators-----------------*/
-    this.sortByDropdown = this.page.locator('.product-sorting-inner select');
-    this.sortDirrectionArrowIcon = this.page.locator('.sort-direction > a');
-    this.searchResultItems = this.page.locator('.listing-tem');
-    this.productCount = this.page.locator('.product-count');
-    this.productPaginationButtons = this.page.locator(
-      '.products-pagination button'
-    );
-    this.breadCrumbs = this.page.locator('.my-2');
   }
 
   private URL = '/search';
   private TITLE = '';
-  readonly inHeader: Header;
-  readonly inFooter: Footer;
+  readonly inHeader: Header = new Header(this.page, this.context);
+  readonly inFooter: Footer = new Footer(this.page, this.context);
 
   //LOCATORS ===============================================================
-  private sortByDropdown: Locator;
-  private sortDirrectionArrowIcon: Locator;
-  private searchResultItems: Locator;
-  private productCount: Locator;
-  private productPaginationButtons: Locator;
-  private breadCrumbs: Locator;
+  private sortByDropdown: Locator = this.page.locator(
+    '.product-sorting-inner select'
+  );
+  private sortDirrectionArrowIcon: Locator = this.page.locator(
+    '.sort-direction > a'
+  );
+  private searchResultItems: Locator = this.page.locator('.listing-tem');
+  private productCount: Locator = this.page.locator('.product-count');
+  private productPaginationButtons: Locator = this.page.locator(
+    '.products-pagination button'
+  );
+  private breadCrumbs: Locator = this.page.locator('.my-2');
 
   //ACTIONS ================================================================
   async navigateToSearchPage(): Promise<void> {

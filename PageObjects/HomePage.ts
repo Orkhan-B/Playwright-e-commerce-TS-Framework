@@ -5,26 +5,17 @@ import { Footer } from './SharedModules/Footer';
 import { Header } from './SharedModules/Header';
 
 export class HomePage extends WebActionsHelper {
-  /**
-   * Initializes the page and context using constructor of the parent class `WebActionsHelper`.
-   - Initializes instances of `Header` and `Footer` classes, representing the header and footer sections of the page respectively, using the provided page and context objects.
-   */
   constructor(_page: Page, _context: BrowserContext) {
     super(_page, _context);
-    this.inHeader = new Header(this.page, this.context);
-    this.inFooter = new Footer(this.page, this.context);
-
-    /*-----------------locators-----------------*/
-    this.ELEMENT = this.page.locator('');
   }
 
   private URL = '';
   private TITLE = '';
-  readonly inHeader: Header;
-  readonly inFooter: Footer;
+  readonly inHeader: Header = new Header(this.page, this.context);
+  readonly inFooter: Footer = new Footer(this.page, this.context);
 
   //LOCATORS ===============================================================
-  private ELEMENT: Locator; //Private property defining a locator for an element on the page.
+  private ELEMENT: Locator = this.page.locator('');
 
   //ACTIONS ================================================================
   /**

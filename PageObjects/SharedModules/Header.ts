@@ -4,30 +4,23 @@ import { BrowserContext, Locator, Page } from '@playwright/test';
 export class Header extends WebActionsHelper {
   constructor(_page: Page, _context: BrowserContext) {
     super(_page, _context);
-
-    /*-----------------locators-----------------*/
-    this.logoIcon = this.page.locator('.logo-icon');
-    this.searchIcon = this.page.locator('.search-icon');
-    this.shopBagIcon = this.page.locator('a[href="/cart"]');
-    this.userIcon = this.page.locator('a[href="/account/login"]');
-    this.menPLPLink = this.page.getByRole('link', { name: 'Men', exact: true });
-    this.womenPLPLink = this.page.getByRole('link', {
-      name: 'Women',
-      exact: true
-    });
-    this.searchInputField = this.page.getByPlaceholder('Search');
-    this.searchModalCloseIcon = this.page.locator('.close-icon');
-  } //constructor
+  }
 
   //LOCATORS ===============================================================
-  private logoIcon: Locator;
-  private searchIcon: Locator;
-  private shopBagIcon: Locator;
-  private userIcon: Locator;
-  private menPLPLink: Locator;
-  private womenPLPLink: Locator;
-  private searchInputField: Locator;
-  private searchModalCloseIcon: Locator;
+  private logoIcon: Locator = this.page.locator('.logo-icon');
+  private searchIcon: Locator = this.page.locator('.search-icon');
+  private shopBagIcon: Locator = this.page.locator('a[href="/cart"]');
+  private userIcon: Locator = this.page.locator('a[href="/account/login"]');
+  private menPLPLink: Locator = this.page.getByRole('link', {
+    name: 'Men',
+    exact: true
+  });
+  private womenPLPLink: Locator = this.page.getByRole('link', {
+    name: 'Women',
+    exact: true
+  });
+  private searchInputField: Locator = this.page.getByPlaceholder('Search');
+  private searchModalCloseIcon: Locator = this.page.locator('.close-icon');
 
   //ACTIONS ================================================================
   async clickOnLogoIcon() {
