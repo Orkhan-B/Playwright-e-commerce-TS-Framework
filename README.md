@@ -2,9 +2,10 @@
 
 ![1*gMiUPuRGC36nxZHe2zthOg](https://github.com/Orkhan-B/Playwright-e-commerce-TS-Framework/assets/142970025/ed06847c-d74d-43a1-8e9d-7d886ded7c97)
 
-```markdown
-Welcome! this repository contains Playwright, TypeScript-based testing framework for e-commerce web application UI and API testing. This framework follows the Page Object Model (POM) design pattern and includes various helper classes and modules to streamline your testing process.
-```
+
+Welcome! this repository contains Playwright, TypeScript-based testing framework for e-commerce web application UI and API testing.
+This framework follows the Page Object Model (POM) design pattern and includes various helper classes and modules to streamline your testing process.
+
 
 ## Features
 
