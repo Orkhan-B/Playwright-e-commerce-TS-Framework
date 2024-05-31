@@ -53,14 +53,17 @@ export const getRandomUser = (
  * @example getRandomEmailAddress('Mike','Smith') returns - 'mike_smith83@customdomain.dev'
  */
 export const getRandomEmailAddress = (firstName: string, lastName: string) => {
-  return fake.internet
-    .email({
-      firstName: firstName,
-      lastName: lastName,
-      provider: process.env.FAKER_EMAIL_DOMAIN,
-      allowSpecialCharacters: false
-    })
-    .toLowerCase();
+  const email = fake.internet.email({
+    firstName: firstName,
+    lastName: lastName,
+    provider: process.env.FAKER_EMAIL_DOMAIN,
+    allowSpecialCharacters: false
+  });
+  return (
+    email.substring(0, email.indexOf('@')) +
+    _.random(1000, 9999, false) +
+    email.substring(email.indexOf('@'))
+  ).toLowerCase();
 };
 
 /**
