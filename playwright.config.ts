@@ -15,7 +15,21 @@ const xrayOptions = {
   // Where to put the report.
   outputFile: './xray-report.xml'
 };
-export const BASE_URL = `https://${process.env.ENV}.evershop.${process.env.DOMAIN}`;
+
+const prefix = () => {
+  switch (process.env.ENV) {
+    case 'prod':
+      return 'www';
+    case 'test':
+      return '';
+    default:
+      throw new Error(
+        `Environment: ${process.env.ENV} not implemented in switch case.`
+      );
+  }
+};
+
+export const BASE_URL = `https://${prefix}.evershop.${process.env.DOMAIN}`;
 
 export default defineConfig({
   testDir: './e2e',
@@ -23,8 +37,13 @@ export default defineConfig({
   forbidOnly: process.env.CI === 'true',
   retries: process.env.CI === 'true' ? 2 : 1,
   workers: process.env.CI === 'true' ? 1 : 1,
-  reporter: [['html'], ['@xray-app/playwright-junit-reporter', xrayOptions]],
-  timeout: 60 * 1000,
+  reporter: [
+    ['html', { open: 'never' }],
+    ['junit'],
+    ['./Helpers/TestRunLogger.ts'],
+    ['@xray-app/playwright-junit-reporter', xrayOptions]
+  ],
+  timeout: 3 * 60 * 1000,
   expect: {
     timeout: 60 * 1000
   },
@@ -33,47 +52,44 @@ export default defineConfig({
     baseURL: BASE_URL,
     trace: 'retry-with-trace',
     video: 'on',
-    screenshot: 'only-on-failure',
+    screenshot: { mode: 'only-on-failure', fullPage: true },
     launchOptions: {
-      headless: true
+      headless: process.env.CI === 'true'
     }
   },
-
-  projects: setProject()
+  projects:
+    process.env.IS_MOBILE === 'true'
+      ? [
+          /* Mobile viewports. */
+          {
+            name: 'Mobile Chrome',
+            use: { ...devices['Pixel 5'] }
+          }
+          // {
+          //   name: 'Mobile Safari',
+          //   use: { ...devices['iPhone 12'] }
+          // }
+        ]
+      : [
+          /* Desktop viewports. */
+          {
+            name: 'chromium',
+            use: {
+              ...devices['Desktop Chrome'],
+              viewport: { width: 1900, height: 900 }
+            }
+          }
+          // {
+          //   name: 'Google Chrome',
+          //   use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1900, height: 900 } } // or 'chrome-beta'
+          // }
+          // {
+          //   name: 'firefox',
+          //   use: { ...devices['Desktop Firefox'], viewport: { width: 1900, height: 900 } }
+          // },
+          // {
+          //   name: 'webkit',
+          //   use: { ...devices['Desktop Safari'], viewport: { width: 1900, height: 900 } }
+          // }
+        ]
 });
-function setProject() {
-  return process.env.IS_MOBILE === 'true'
-    ? [
-        {
-          name: 'Mobile Chrome',
-          use: { ...devices['Pixel 5'] }
-        }
-      ]
-    : [
-        {
-          name: 'chromium',
-          use: { ...devices['Desktop Chrome'] }
-        }
-      ];
-
-  /* Alternative options----------------------
-  Desktop viewports---------------------------
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] }
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] }
-    }
-  Mmobile viewports---------------------------
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] }
-    }
-  */
-}
